@@ -1,11 +1,11 @@
 package test
 
 import (
-	"fmt"
+//	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
-	"github.com/gruntwork-io/terratest/modules/random"
+//	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,7 +16,7 @@ func TestTerraformAwsExample(t *testing.T) {
 
 	// Give this EC2 Instance a unique ID for a name tag so we can distinguish it from any other EC2 Instance running
 	// in your AWS account
-	expectedName := fmt.Sprintf("terratest-aws-example-%s", random.UniqueId())
+	// expectedName := fmt.Sprintf("terratest-aws-example-%s", random.UniqueId())
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
@@ -26,9 +26,9 @@ func TestTerraformAwsExample(t *testing.T) {
 		TerraformDir: "../../terraform",
 
 		// Variables to pass to our Terraform code using -var options
-		Vars: map[string]interface{}{
-			"instance_name": expectedName,
-		},
+		// Vars: map[string]interface{}{
+		// 	"instance_name": expectedName,
+		// },
 
 		// Environment variables to set when running Terraform
 		EnvVars: map[string]string{
