@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:7efa4db58a4a356898b94e5a2b95a677890937e91923ef8e11f2389a80993174"
+  digest = "1:d892b45b5be5eebf44b171dad4d727146114c17bfd17e8a38c2e670f34fa49a8"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -55,8 +55,8 @@
     "service/sts",
   ]
   pruneopts = "UT"
-  revision = "a00e7512a2533cd96e525fe50607f9fe98badec3"
-  version = "v1.16.4"
+  revision = "d75ca9c91e5bcf0c3adb9672a786ac65e8073a6e"
+  version = "v1.16.13"
 
 [[projects]]
   digest = "1:7b94d37d65c0445053c6f3e73090e3966c1c29127035492c349e14f25c440359"
@@ -95,7 +95,7 @@
   version = "0.2"
 
 [[projects]]
-  digest = "1:4ee591626de66be3d03cb96d064ec53572daf2d5087c5c9bfbef057b87d5f0f7"
+  digest = "1:a4ac3cf3ecf87e3fcc7b17a83cac41066e8aa5ed472977684b90c9a87e21f94b"
   name = "github.com/gruntwork-io/terratest"
   packages = [
     "modules/aws",
@@ -110,8 +110,8 @@
     "modules/terraform",
   ]
   pruneopts = "UT"
-  revision = "dfcc65c6f5c1f535f008cd496c69dbce62b305d6"
-  version = "v0.13.16"
+  revision = "da848892d7e2822604027814f5402743eb1c292c"
+  version = "v0.13.20"
 
 [[projects]]
   digest = "1:bb81097a5b62634f3e9fec1014657855610c82d19b9a40c17612e32651e35dca"
@@ -129,7 +129,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:6c7a3f738e37a1c7ad3d56122a34932140654d51a57e01f8613cdf3eaf050911"
+  digest = "1:dc56e7178a82f8e84960ed9efa7d4ebd0a6d7864894bfc46f8a35ee5eae7153a"
   name = "github.com/pquerna/otp"
   packages = [
     ".",
@@ -137,13 +137,16 @@
     "totp",
   ]
   pruneopts = "UT"
-  revision = "b7b89250c468c06871d3837bee02e2d5c155ae19"
-  version = "v1.0.0"
+  revision = "be78767b3e392ce45ea73444451022a6fc32ad0d"
+  version = "v1.1.0"
 
 [[projects]]
-  digest = "1:18752d0b95816a1b777505a97f71c7467a8445b8ffb55631a7bf779f6ba4fa83"
+  digest = "1:c40d65817cdd41fac9aa7af8bed56927bb2d6d47e4fea566a74880f5c2b1c41e"
   name = "github.com/stretchr/testify"
-  packages = ["assert"]
+  packages = [
+    "assert",
+    "require",
+  ]
   pruneopts = "UT"
   revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
   version = "v1.2.2"
@@ -163,7 +166,7 @@
     "ssh/agent",
   ]
   pruneopts = "UT"
-  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
+  revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
 
 [[projects]]
   branch = "master"
@@ -171,15 +174,15 @@
   name = "golang.org/x/net"
   packages = ["context"]
   pruneopts = "UT"
-  revision = "610586996380ceef02dd726cc09df7e00a3f8e56"
+  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = "UT"
-  revision = "4a4468ece617fc8205e99368fa2200e9d1fad421"
-  version = "v1.3.0"
+  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
+  version = "v1.4.0"
 
 [solve-meta]
   analyzer-name = "dep"
