@@ -43,7 +43,6 @@ func TestTerraformAwsExample(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-    vpcId := terraform.Output(t, terraformOptions, "vpc_id")
     vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
 	// instanceID := terraform.Output(t, terraformOptions, "instance_id")
 
@@ -61,6 +60,6 @@ func TestTerraformAwsExample(t *testing.T) {
 	// assert.True(t, containsNameTag)
 	// assert.Equal(t, expectedName, nameTag)
 
-    assert.Equal(t, vpcId, vpcId)
+    // TODO: fix this test, it is a nothing atm, it passes regardless
     assert.Equal(t, vpcCidr, "10.0.0.0/16")
 }
