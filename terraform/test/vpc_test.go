@@ -46,6 +46,8 @@ func TestTerraformAwsExample(t *testing.T) {
 
 	// Run `terraform output` to get the value of an output variable
     vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
+    vpcId := terraform.Output(t, terraformOptions, "vpc_id")
+    vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
 	// instanceID := terraform.Output(t, terraformOptions, "instance_id")
 
 	// aws.AddTagsToResource(t, awsRegion, instanceID, map[string]string{"testing": "testing-tag-value"})
@@ -64,4 +66,5 @@ func TestTerraformAwsExample(t *testing.T) {
 
     // TODO: fix this test, it is a nothing atm, it passes regardless
     assert.Equal(t, vpcCidr, "10.0.0.0/16")
+    assert.Equal(t, len(vpcSubnets), 2)
 }
