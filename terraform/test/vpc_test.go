@@ -19,6 +19,8 @@ func TestTerraformAwsExample(t *testing.T) {
 	// expectedName := fmt.Sprintf("terratest-aws-example-%s", random.UniqueId())
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
+    // Issue found with this is you can come across dodgy regions without as much support and fine code breaks, like
+    // regions not having enough AZ's to support 3 separate subnets in TF code
 	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
 
 	terraformOptions := &terraform.Options{

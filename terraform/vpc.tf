@@ -5,6 +5,7 @@
 # * Route Table
 
 resource "aws_vpc" "honeypot" {
+  // should probably source this number from a var file
   cidr_block = "10.0.0.0/16"
 
   tags {
@@ -14,7 +15,12 @@ resource "aws_vpc" "honeypot" {
 }
 
 resource "aws_subnet" "honeypot" {
-  count = 3
+  // originally (and normally) I'd run three subnets because it's typically
+  // a better way of handling HA, but the way we are testing this code with
+  // terratest spins up in a random region, and some regions only have 2 AZ's
+  // so I've reduced down to 2. My main reason for the reduction is that this
+  // isn't a critical system, so reduced availability isn't a massive issue.
+  count = 2
 
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
   cidr_block        = "10.0.${count.index}.0/24"
