@@ -44,6 +44,7 @@ func TestTerraformAwsExample(t *testing.T) {
 
 	// Run `terraform output` to get the value of an output variable
     vpcId := terraform.Output(t, terraformOptions, "vpc_id")
+    vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
 	// instanceID := terraform.Output(t, terraformOptions, "instance_id")
 
 	// aws.AddTagsToResource(t, awsRegion, instanceID, map[string]string{"testing": "testing-tag-value"})
@@ -61,4 +62,5 @@ func TestTerraformAwsExample(t *testing.T) {
 	// assert.Equal(t, expectedName, nameTag)
 
     assert.Equal(t, vpcId, vpcId)
+    assert.Equal(t, vpcCidr, "10.0.0.0/16")
 }
