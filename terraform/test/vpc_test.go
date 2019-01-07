@@ -1,7 +1,7 @@
 package test
 
 import (
-//	"fmt"
+	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
@@ -48,23 +48,29 @@ func TestTerraformAwsExample(t *testing.T) {
     vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
     vpcId := terraform.Output(t, terraformOptions, "vpc_id")
     vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
-	// instanceID := terraform.Output(t, terraformOptions, "instance_id")
 
-	// aws.AddTagsToResource(t, awsRegion, instanceID, map[string]string{"testing": "testing-tag-value"})
+    for index, subnet := range vpcSubnets {
+        // get the subnet id
+        fmt.Println(index)
+        fmt.Println(subnet)
 
-	// Look up the tags for the given Instance ID
-	// instanceTags := aws.GetTagsForEc2Instance(t, awsRegion, instanceID)
+        // insert the subnet id into the client request
+        // req := client.DescribeSubnetsRequest(params)
+        // resp, err := req.Send()
 
-	// testingTag, containsTestingTag := instanceTags["testing"]
-	// assert.True(t, containsTestingTag)
-	// assert.Equal(t, "testing-tag-value", testingTag)
+        // traverse the json resp, finding only the subnet cidr block and
+        // append it to an array
 
-	// // Verify that our expected name tag is one of the tags
-	// nameTag, containsNameTag := instanceTags["Name"]
-	// assert.True(t, containsNameTag)
-	// assert.Equal(t, expectedName, nameTag)
+        // output the array and test against expected
+    }
+
+    // iterate over the vpcSubnets and retrieve the cidr blocks for each id 
+    // to be used in the test
+
 
     // TODO: fix this test, it is a nothing atm, it passes regardless
     assert.Equal(t, vpcCidr, "10.0.0.0/16")
     assert.Equal(t, len(vpcSubnets), 2)
+    // look for the ip's we expect in the vpcSubnets that we iterate through
+    // assert.Contains(t, ["10.0.1.0", "10.0.2.0"]
 }
