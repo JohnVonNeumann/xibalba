@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:d892b45b5be5eebf44b171dad4d727146114c17bfd17e8a38c2e670f34fa49a8"
+  digest = "1:d1ba0ea16950fca041f2a14b733c44e91f1fb49220403e5c2c51f6aea0898176"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -55,8 +55,16 @@
     "service/sts",
   ]
   pruneopts = "UT"
-  revision = "d75ca9c91e5bcf0c3adb9672a786ac65e8073a6e"
-  version = "v1.16.13"
+  revision = "fb5f514796fc4fdc6afdcf5a675a5b2baa714b9f"
+  version = "v1.16.14"
+
+[[projects]]
+  digest = "1:af4fea3edeb207df00142e4d44af5265fa821b6b5f2aad31fb292c13bf1441df"
+  name = "github.com/aws/aws-sdk-go-v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "c2b476bac53067cebc587747e866881b2e383625"
+  version = "v0.7.0"
 
 [[projects]]
   digest = "1:7b94d37d65c0445053c6f3e73090e3966c1c29127035492c349e14f25c440359"
@@ -141,15 +149,15 @@
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:c40d65817cdd41fac9aa7af8bed56927bb2d6d47e4fea566a74880f5c2b1c41e"
+  digest = "1:5da8ce674952566deae4dbc23d07c85caafc6cfa815b0b3e03e41979cedb8750"
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
     "require",
   ]
   pruneopts = "UT"
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
@@ -188,8 +196,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/aws/aws-sdk-go-v2",
     "github.com/gruntwork-io/terratest/modules/aws",
-    "github.com/gruntwork-io/terratest/modules/random",
     "github.com/gruntwork-io/terratest/modules/terraform",
     "github.com/stretchr/testify/assert",
   ]
