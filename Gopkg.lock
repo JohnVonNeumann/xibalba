@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:d1ba0ea16950fca041f2a14b733c44e91f1fb49220403e5c2c51f6aea0898176"
+  digest = "1:d3bff6ab5222314d8574b31d744cce3c17315698964f904fd89ff0b1ee742d1e"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -55,13 +55,25 @@
     "service/sts",
   ]
   pruneopts = "UT"
-  revision = "fb5f514796fc4fdc6afdcf5a675a5b2baa714b9f"
-  version = "v1.16.14"
+  revision = "62936e15518acb527a1a9cb4a39d96d94d0fd9a2"
+  version = "v1.16.15"
 
 [[projects]]
-  digest = "1:af4fea3edeb207df00142e4d44af5265fa821b6b5f2aad31fb292c13bf1441df"
+  digest = "1:0dc4c258f69764aa2df8fda3326d5a5aacd2466e0d1dce1b2c86476a0b964219"
   name = "github.com/aws/aws-sdk-go-v2"
-  packages = ["."]
+  packages = [
+    "aws",
+    "aws/awserr",
+    "aws/signer/v4",
+    "internal/awsutil",
+    "internal/sdk",
+    "private/protocol",
+    "private/protocol/ec2query",
+    "private/protocol/query/queryutil",
+    "private/protocol/rest",
+    "private/protocol/xml/xmlutil",
+    "service/ec2",
+  ]
   pruneopts = "UT"
   revision = "c2b476bac53067cebc587747e866881b2e383625"
   version = "v0.7.0"
@@ -182,7 +194,7 @@
   name = "golang.org/x/net"
   packages = ["context"]
   pruneopts = "UT"
-  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
+  revision = "45ffb0cd1ba084b73e26dee67e667e1be5acce83"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
@@ -196,7 +208,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/aws/aws-sdk-go-v2",
+    "github.com/aws/aws-sdk-go-v2/aws",
+    "github.com/aws/aws-sdk-go-v2/service/ec2",
     "github.com/gruntwork-io/terratest/modules/aws",
     "github.com/gruntwork-io/terratest/modules/terraform",
     "github.com/stretchr/testify/assert",
