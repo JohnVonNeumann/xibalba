@@ -59,20 +59,30 @@
   version = "v1.16.15"
 
 [[projects]]
-  digest = "1:0dc4c258f69764aa2df8fda3326d5a5aacd2466e0d1dce1b2c86476a0b964219"
+  digest = "1:abb9e396a89827531b69f68252a5d92e7a6b3ae865cd5c8c259d9401cef36376"
   name = "github.com/aws/aws-sdk-go-v2"
   packages = [
     "aws",
     "aws/awserr",
+    "aws/defaults",
+    "aws/ec2metadata",
+    "aws/ec2rolecreds",
+    "aws/endpointcreds",
+    "aws/endpoints",
+    "aws/external",
     "aws/signer/v4",
+    "aws/stscreds",
     "internal/awsutil",
+    "internal/ini",
     "internal/sdk",
     "private/protocol",
     "private/protocol/ec2query",
+    "private/protocol/query",
     "private/protocol/query/queryutil",
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/ec2",
+    "service/sts",
   ]
   pruneopts = "UT"
   revision = "c2b476bac53067cebc587747e866881b2e383625"
@@ -208,7 +218,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/aws/aws-sdk-go-v2/aws",
+    "github.com/aws/aws-sdk-go-v2/aws/external",
     "github.com/aws/aws-sdk-go-v2/service/ec2",
     "github.com/gruntwork-io/terratest/modules/aws",
     "github.com/gruntwork-io/terratest/modules/terraform",
