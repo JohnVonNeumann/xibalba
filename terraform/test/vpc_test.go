@@ -8,6 +8,9 @@ import (
 //	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+    // renamed to aws2 to avoid name collision
+    aws2 "github.com/aws/aws-sdk-go-v2/aws"
+    "github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
 // An example of how to test the Terraform module in examples/terraform-aws-example using Terratest.
@@ -54,6 +57,9 @@ func TestTerraformAwsExample(t *testing.T) {
         fmt.Println(index)
         fmt.Println(subnet)
 
+        // TODO LEFT HERE: init the client, go test is failing
+        // client := ec2.New(mySession)
+        
         // insert the subnet id into the client request
         // req := client.DescribeSubnetsRequest(params)
         // resp, err := req.Send()
@@ -62,6 +68,7 @@ func TestTerraformAwsExample(t *testing.T) {
         // append it to an array
 
         // output the array and test against expected
+
     }
 
     // iterate over the vpcSubnets and retrieve the cidr blocks for each id 
