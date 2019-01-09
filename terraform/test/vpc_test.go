@@ -9,12 +9,14 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
     // renamed to aws2 to avoid name collision
-    aws2 "github.com/aws/aws-sdk-go-v2/aws"
+//    aws2 "github.com/aws/aws-sdk-go-v2/aws"
     "github.com/aws/aws-sdk-go-v2/service/ec2"
+    "github.com/aws/aws-sdk-go-v2/aws/external"
 )
 
 // An example of how to test the Terraform module in examples/terraform-aws-example using Terratest.
 func TestTerraformAwsExample(t *testing.T) {
+    // no ret val
 	t.Parallel()
 
 	// Give this EC2 Instance a unique ID for a name tag so we can distinguish it from any other EC2 Instance running
@@ -55,14 +57,21 @@ func TestTerraformAwsExample(t *testing.T) {
     for index, subnet := range vpcSubnets {
         // get the subnet id
         fmt.Println(index)
-        fmt.Println(subnet)
+        fmt.Println(subnet.Id)
 
-        // TODO LEFT HERE: init the client, go test is failing
-        // client := ec2.New(mySession)
-        
+        cfg, err := external.LoadDefaultAWSConfig()
+        cfg.Region = awsRegion
+
+        client := ec2.New(cfg)
+
+        // create the subnet data struct
+        // TODO: LEFT HERE creating a filter to apply to the subnets input
+        //                  check your FF tabs for context
+        subnetIDFilter := ec2.Filter{Name: "subnet-id", Values:
+
         // insert the subnet id into the client request
-        // req := client.DescribeSubnetsRequest(params)
-        // resp, err := req.Send()
+        req := client.DescribeSubnetsRequest(DescribeSubnetsInput{subnet})
+        resp, err := req.Send()
 
         // traverse the json resp, finding only the subnet cidr block and
         // append it to an array
