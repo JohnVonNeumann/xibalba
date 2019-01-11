@@ -11,7 +11,7 @@ import (
     // renamed to aws2 to avoid name collision
 //    aws2 "github.com/aws/aws-sdk-go-v2/aws"
 //    "github.com/aws/aws-sdk-go-v2/service/ec2"
-  //  "github.com/aws/aws-sdk-go-v2/aws/external"
+    "github.com/aws/aws-sdk-go-v2/aws/external"
 )
 
 // An example of how to test the Terraform module in examples/terraform-aws-example using Terratest.
@@ -61,20 +61,14 @@ func TestTerraformAwsExample(t *testing.T) {
 
     fmt.Println(subnetList)
 
-    //    for index, subnet := range vpcSubnets {
-    //        // get the subnet id
-    //        fmt.Println(index)
-    //        fmt.Println(subnet.Id)
-    //
-    //        //cfg, err := external.LoadDefaultAWSConfig()
-    //        //cfg.Region = awsRegion
-    //
-    //        //client := ec2.New(cfg)
-    //
-    //        // create the subnet data struct
+    cfg, _ := external.LoadDefaultAWSConfig()
+    cfg.Region = awsRegion
+ //   client := ec2.New(cfg)
+
+     // create the subnet data struct
     //        // TODO: LEFT HERE creating a filter to apply to the subnets input
     //        //                  check your FF tabs for context
-    //
+
     //        //fmt.Printf("listing subnets belonging to %v : %v", vpcId, subnet)
     //
     //
