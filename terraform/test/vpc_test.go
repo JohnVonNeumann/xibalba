@@ -54,24 +54,23 @@ func TestTerraformAwsExample(t *testing.T) {
     vpcId := terraform.Output(t, terraformOptions, "vpc_id")
     vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
 
+    // subnetList must be created from vpcSubnets as vpcSubnets returns a struct
+    // with more information than is required, in particular, it included the
+    // availability zones of the subnets.
     var subnetList []string
     for _, subnet := range vpcSubnets {
         subnetList = append(subnetList, subnet.Id)
     }
 
-    fmt.Println(subnetList)
+    fmt.Printf("listing subnets belonging to %v : %v\n", vpcId, subnetList)
 
     cfg, _ := external.LoadDefaultAWSConfig()
     cfg.Region = awsRegion
- //   client := ec2.New(cfg)
+//    client := ec2.New(cfg)
 
-     // create the subnet data struct
-    //        // TODO: LEFT HERE creating a filter to apply to the subnets input
-    //        //                  check your FF tabs for context
-
-    //        //fmt.Printf("listing subnets belonging to %v : %v", vpcId, subnet)
-    //
-    //
+    // create the subnet data struct
+    // TODO: LEFT HERE creating a filter to apply to the subnets input
+    //                  check your FF tabs for context
     //        //subnetIDFilter := ec2.Filter{Name: "subnet-id", Values: []subnet.Id}
     //        //fmt.Println(subnetIDFilter)
     //
