@@ -67,7 +67,12 @@ func TestTerraformAwsExample(t *testing.T) {
         // create the subnet data struct
         // TODO: LEFT HERE creating a filter to apply to the subnets input
         //                  check your FF tabs for context
-        subnetIDFilter := ec2.Filter{Name: "subnet-id", Values:
+
+        fmt.Printf("listing subnets belonging to %v : %v", vpcId, subnet)
+
+
+        subnetIDFilter := ec2.Filter{Name: "subnet-id", Values: []subnet.Id}
+        fmt.Println(subnetIDFilter)
 
         // insert the subnet id into the client request
         req := client.DescribeSubnetsRequest(DescribeSubnetsInput{subnet})
