@@ -68,7 +68,6 @@ func TestTerraformAwsExample(t *testing.T) {
     cfg.Region = awsRegion
     client := ec2.New(cfg)
 
-//    name_filter := "subnet-id"
     params := &ec2.DescribeSubnetsInput{
             Filters: []ec2.Filter{
                     {
@@ -84,26 +83,18 @@ func TestTerraformAwsExample(t *testing.T) {
 
     fmt.Printf("%+v\n", *resp)
 
-    // create the subnet data struct
-    // TODO: LEFT HERE creating a filter to apply to the subnets input
-    //                  check your FF tabs for context
-    // subnetIDFilter := ec2.Filter{Name: "subnet-id", Values: []subnet.Id}
-    // fmt.Println(subnetIDFilter)
-
-    // insert the subnet id into the client request
-    //req := client.DescribeSubnetsRequest(DescribeSubnetsInput{subnet})
-    //resp, err := req.Send()
-
     // traverse the json resp, finding only the subnet cidr block and
-    // append it to an array
+    // append it to an array/slice much like we did with the subnetList
+    // var subnetCidrList []string
+//    for index, subnet := range resp {
+//      //  subnetCidrList = append(subnetCidrList, subnet.Subnets)
+//      fmt.Printf(resp[index].Subnets)
+//    }
+
+    fmt.Printf("%+v\n", resp.Subnets)
 
     // output the array and test against expected
 
-    // iterate over the vpcSubnets and retrieve the cidr blocks for each id 
-    // to be used in the test
-
-
-    // TODO: fix this test, it is a nothing atm, it passes regardless
     assert.Equal(t, vpcCidr, "10.0.0.0/16")
     assert.Equal(t, len(vpcSubnets), 2)
     // look for the ip's we expect in the vpcSubnets that we iterate through
