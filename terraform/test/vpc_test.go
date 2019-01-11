@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"testing"
+//    "encoding/json"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 //	"github.com/gruntwork-io/terratest/modules/random"
@@ -81,19 +82,18 @@ func TestTerraformAwsExample(t *testing.T) {
 
     resp, _ := req.Send()
 
-    fmt.Printf("%+v\n", *resp)
+    //fmt.Printf("%+v\n", *resp)
 
     // traverse the json resp, finding only the subnet cidr block and
     // append it to an array/slice much like we did with the subnetList
-    // var subnetCidrList []string
-//    for index, subnet := range resp {
-//      //  subnetCidrList = append(subnetCidrList, subnet.Subnets)
-//      fmt.Printf(resp[index].Subnets)
-//    }
-
-    fmt.Printf("%+v\n", resp.Subnets)
+    //var subnetCidrList []string
+    for _, subnet := range resp.Subnets {
+      fmt.Printf("%+v\n", *subnet.CidrBlock)
+    }
 
     // output the array and test against expected
+    // string_resp := resp.GoString()
+    //fmt.Printf(string_resp)
 
     assert.Equal(t, vpcCidr, "10.0.0.0/16")
     assert.Equal(t, len(vpcSubnets), 2)
