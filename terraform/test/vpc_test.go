@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
     // renamed to aws2 to avoid name collision
 //    aws2 "github.com/aws/aws-sdk-go-v2/aws"
-    "github.com/aws/aws-sdk-go-v2/service/ec2"
-    "github.com/aws/aws-sdk-go-v2/aws/external"
+//    "github.com/aws/aws-sdk-go-v2/service/ec2"
+  //  "github.com/aws/aws-sdk-go-v2/aws/external"
 )
 
 // An example of how to test the Terraform module in examples/terraform-aws-example using Terratest.
@@ -54,37 +54,44 @@ func TestTerraformAwsExample(t *testing.T) {
     vpcId := terraform.Output(t, terraformOptions, "vpc_id")
     vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
 
-    for index, subnet := range vpcSubnets {
-        // get the subnet id
-        fmt.Println(index)
-        fmt.Println(subnet.Id)
-
-        cfg, err := external.LoadDefaultAWSConfig()
-        cfg.Region = awsRegion
-
-        client := ec2.New(cfg)
-
-        // create the subnet data struct
-        // TODO: LEFT HERE creating a filter to apply to the subnets input
-        //                  check your FF tabs for context
-
-        fmt.Printf("listing subnets belonging to %v : %v", vpcId, subnet)
-
-
-        subnetIDFilter := ec2.Filter{Name: "subnet-id", Values: []subnet.Id}
-        fmt.Println(subnetIDFilter)
-
-        // insert the subnet id into the client request
-        req := client.DescribeSubnetsRequest(DescribeSubnetsInput{subnet})
-        resp, err := req.Send()
-
-        // traverse the json resp, finding only the subnet cidr block and
-        // append it to an array
-
-        // output the array and test against expected
-
+    var subnetList []string
+    for _, subnet := range vpcSubnets {
+        subnetList = append(subnetList, subnet.Id)
     }
 
+    fmt.Println(subnetList)
+
+    //    for index, subnet := range vpcSubnets {
+    //        // get the subnet id
+    //        fmt.Println(index)
+    //        fmt.Println(subnet.Id)
+    //
+    //        //cfg, err := external.LoadDefaultAWSConfig()
+    //        //cfg.Region = awsRegion
+    //
+    //        //client := ec2.New(cfg)
+    //
+    //        // create the subnet data struct
+    //        // TODO: LEFT HERE creating a filter to apply to the subnets input
+    //        //                  check your FF tabs for context
+    //
+    //        //fmt.Printf("listing subnets belonging to %v : %v", vpcId, subnet)
+    //
+    //
+    //        //subnetIDFilter := ec2.Filter{Name: "subnet-id", Values: []subnet.Id}
+    //        //fmt.Println(subnetIDFilter)
+    //
+    //        // insert the subnet id into the client request
+    //        //req := client.DescribeSubnetsRequest(DescribeSubnetsInput{subnet})
+    //        //resp, err := req.Send()
+    //
+    //        // traverse the json resp, finding only the subnet cidr block and
+    //        // append it to an array
+    //
+    //        // output the array and test against expected
+    //
+    //    }
+    //
     // iterate over the vpcSubnets and retrieve the cidr blocks for each id 
     // to be used in the test
 
