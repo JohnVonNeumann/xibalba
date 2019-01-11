@@ -9,8 +9,8 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
     // renamed to aws2 to avoid name collision
-//    aws2 "github.com/aws/aws-sdk-go-v2/aws"
-//    "github.com/aws/aws-sdk-go-v2/service/ec2"
+    aws2 "github.com/aws/aws-sdk-go-v2/aws"
+    "github.com/aws/aws-sdk-go-v2/service/ec2"
     "github.com/aws/aws-sdk-go-v2/aws/external"
 )
 
@@ -66,25 +66,39 @@ func TestTerraformAwsExample(t *testing.T) {
 
     cfg, _ := external.LoadDefaultAWSConfig()
     cfg.Region = awsRegion
-//    client := ec2.New(cfg)
+    client := ec2.New(cfg)
+
+//    name_filter := "subnet-id"
+    params := &ec2.DescribeSubnetsInput{
+            Filters: []ec2.Filter{
+                    {
+                            Name: aws2.String("subnet-id"),
+                            Values: subnetList,
+                    },
+            },
+    }
+
+    req := client.DescribeSubnetsRequest(params)
+
+    resp, _ := req.Send()
+
+    fmt.Printf("%+v\n", *resp)
 
     // create the subnet data struct
     // TODO: LEFT HERE creating a filter to apply to the subnets input
     //                  check your FF tabs for context
-    //        //subnetIDFilter := ec2.Filter{Name: "subnet-id", Values: []subnet.Id}
-    //        //fmt.Println(subnetIDFilter)
-    //
-    //        // insert the subnet id into the client request
-    //        //req := client.DescribeSubnetsRequest(DescribeSubnetsInput{subnet})
-    //        //resp, err := req.Send()
-    //
-    //        // traverse the json resp, finding only the subnet cidr block and
-    //        // append it to an array
-    //
-    //        // output the array and test against expected
-    //
-    //    }
-    //
+    // subnetIDFilter := ec2.Filter{Name: "subnet-id", Values: []subnet.Id}
+    // fmt.Println(subnetIDFilter)
+
+    // insert the subnet id into the client request
+    //req := client.DescribeSubnetsRequest(DescribeSubnetsInput{subnet})
+    //resp, err := req.Send()
+
+    // traverse the json resp, finding only the subnet cidr block and
+    // append it to an array
+
+    // output the array and test against expected
+
     // iterate over the vpcSubnets and retrieve the cidr blocks for each id 
     // to be used in the test
 
