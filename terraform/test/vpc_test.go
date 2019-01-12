@@ -34,9 +34,9 @@ func TestTerraformVpcTemplate(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
-	vpcId := terraform.Output(t, terraformOptions, "vpc_id")
-	igwId := terraform.Output(t, terraformOptions, "internet_gateway_id")
-	vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
+	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
+	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
+	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
 
 	var subnetList []string
 	for _, subnet := range vpcSubnets {
@@ -65,7 +65,7 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		subnetCidrList = append(subnetCidrList, *subnet.CidrBlock)
 	}
 
-	igwList := []string{igwId}
+	igwList := []string{igwID}
 	igwParams := &ec2.DescribeInternetGatewaysInput{
 		Filters: []ec2.Filter{
 			{
