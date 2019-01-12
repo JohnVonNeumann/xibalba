@@ -7,18 +7,18 @@ import (
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
-    // renamed to aws2 to avoid name collision
-    aws2 "github.com/aws/aws-sdk-go-v2/aws"
-    "github.com/aws/aws-sdk-go-v2/service/ec2"
-    "github.com/aws/aws-sdk-go-v2/aws/external"
+	// renamed to aws2 to avoid name collision
+	aws2 "github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
 func TestTerraformVpcTemplate(t *testing.T) {
 	t.Parallel()
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
-    // Issue found with this is you can come across dodgy regions without as much support and fine code breaks, like
-    // regions not having enough AZ's to support 3 separate subnets in TF code
+	// Issue found with this is you can come across dodgy regions without as much support and fine code breaks, like
+	// regions not having enough AZ's to support 3 separate subnets in TF code
 	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
 
 	terraformOptions := &terraform.Options{
@@ -33,56 +33,62 @@ func TestTerraformVpcTemplate(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-    vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
-    vpcId := terraform.Output(t, terraformOptions, "vpc_id")
-    igwId := terraform.Output(t, terraformOptions, "internet_gateway_id")
-    vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
+	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
+	vpcId := terraform.Output(t, terraformOptions, "vpc_id")
+	igwId := terraform.Output(t, terraformOptions, "internet_gateway_id")
+	vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
 
-    var subnetList []string
-    for _, subnet := range vpcSubnets {
-        subnetList = append(subnetList, subnet.Id)
-    }
+	var subnetList []string
+	for _, subnet := range vpcSubnets {
+		subnetList = append(subnetList, subnet.Id)
+	}
 
-    cfg, _ := external.LoadDefaultAWSConfig()
-    cfg.Region = awsRegion
-    client := ec2.New(cfg)
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
 
-    subnetParams := &ec2.DescribeSubnetsInput{
-            Filters: []ec2.Filter{
-                    {
-                            Name: aws2.String("subnet-id"),
-                            Values: subnetList,
-                    },
-            },
-    }
+	subnetParams := &ec2.DescribeSubnetsInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("subnet-id"),
+				Values: subnetList,
+			},
+		},
+	}
 
-    subnetReq := client.DescribeSubnetsRequest(subnetParams)
+	subnetReq := client.DescribeSubnetsRequest(subnetParams)
 
-    subnetResp, _ := subnetReq.Send()
+	subnetResp, _ := subnetReq.Send()
 
-    var subnetCidrList []string
-    for _, subnet := range subnetResp.Subnets {
-      subnetCidrList = append(subnetCidrList, *subnet.CidrBlock)
-    }
+	var subnetCidrList []string
+	for _, subnet := range subnetResp.Subnets {
+		subnetCidrList = append(subnetCidrList, *subnet.CidrBlock)
+	}
 
-    igwList := []string{igwId}
-    igwParams := &ec2.DescribeInternetGatewaysInput{
-            Filters: []ec2.Filter{
-                    {
-                            Name: aws2.String("internet-gateway-id"),
-                            Values: igwList,
-                    },
-            },
-    }
+	igwList := []string{igwId}
+	igwParams := &ec2.DescribeInternetGatewaysInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("internet-gateway-id"),
+				Values: igwList,
+			},
+		},
+	}
 
-    igwReq := client.DescribeInternetGatewaysRequest(igwParams)
-    igwResp, _ := igwReq.Send()
+	igwReq := client.DescribeInternetGatewaysRequest(igwParams)
+	igwResp, _ := igwReq.Send()
 
-    fmt.Println(igwResp)
+	// test that igw has attachements in available state
 
-    acceptableCidrList := [2]string{"10.0.0.0/28","10.0.1.0/28"}
+	// test that the vpc is the correct vpc
 
-    assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
-    assert.Equal(t, vpcCidr, "10.0.0.0/16")
-    assert.Equal(t, len(vpcSubnets), 2)
+	// test that the vpc has an internet gateway
+
+	fmt.Println(igwResp)
+
+	acceptableCidrList := [2]string{"10.0.0.0/28", "10.0.1.0/28"}
+
+	assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
+	assert.Equal(t, vpcCidr, "10.0.0.0/16")
+	assert.Equal(t, len(vpcSubnets), 2)
 }
