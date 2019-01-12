@@ -11,10 +11,18 @@ import (
 	aws2 "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
 )
 
 func TestTerraformVpcTemplate(t *testing.T) {
 	t.Parallel()
+
+	terraformDir := test_structure.CopyTerraformFolderToTemp(t, "../../", "terraform")
+
+	defer test_structure.RunTestStage(t, "teardown", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		terraform.Destroy(t, terraformOptions)
+	})
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	// Issue found with this is you can come across dodgy regions without as much support and fine code breaks, like
@@ -28,8 +36,6 @@ func TestTerraformVpcTemplate(t *testing.T) {
 			"AWS_DEFAULT_REGION": awsRegion,
 		},
 	}
-
-	defer terraform.Destroy(t, terraformOptions)
 
 	terraform.InitAndApply(t, terraformOptions)
 
@@ -78,7 +84,7 @@ func TestTerraformVpcTemplate(t *testing.T) {
 	igwReq := client.DescribeInternetGatewaysRequest(igwParams)
 	igwResp, _ := igwReq.Send()
 
-	// test that igw has attachements in available state
+	// test that igw has attachments in available state
 
 	// test that the vpc is the correct vpc
 
