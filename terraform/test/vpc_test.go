@@ -82,19 +82,19 @@ func TestTerraformAwsExample(t *testing.T) {
 
     resp, _ := req.Send()
 
-    //fmt.Printf("%+v\n", *resp)
-
     // traverse the json resp, finding only the subnet cidr block and
     // append it to an array/slice much like we did with the subnetList
-    //var subnetCidrList []string
+    var subnetCidrList []string
     for _, subnet := range resp.Subnets {
       fmt.Printf("%+v\n", *subnet.CidrBlock)
+      subnetCidrList = append(subnetCidrList, *subnet.CidrBlock)
     }
 
-    // output the array and test against expected
-    // string_resp := resp.GoString()
-    //fmt.Printf(string_resp)
+    fmt.Printf("listing cidrBlocks in use by subnets %v: %v\n", subnetList, subnetCidrList)
 
+    acceptableCidrList := [2]string{"10.0.0.0/24","10.0.1.0/24"}
+
+    assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
     assert.Equal(t, vpcCidr, "10.0.0.0/16")
     assert.Equal(t, len(vpcSubnets), 2)
     // look for the ip's we expect in the vpcSubnets that we iterate through
