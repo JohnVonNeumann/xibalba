@@ -24,20 +24,12 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		terraform.Destroy(t, terraformOptions)
 	})
 
-	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
-	// Issue found with this is you can come across dodgy regions without as much support and fine code breaks, like
-	// regions not having enough AZ's to support 3 separate subnets in TF code
-	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
+	test.structure.RunTestStage(t, "setup", func() {
+		terraformOptions := createTerraformOptions(t, terraformDir)
+		test_structure.SaveTerraformOptions(t, terraformDir, terraformOptions)
 
-	terraformOptions := &terraform.Options{
-		TerraformDir: "../../terraform",
-
-		EnvVars: map[string]string{
-			"AWS_DEFAULT_REGION": awsRegion,
-		},
-	}
-
-	terraform.InitAndApply(t, terraformOptions)
+		terraform.InitAndApply(t, terraformOptions)
+	})
 
 	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
@@ -97,4 +89,23 @@ func TestTerraformVpcTemplate(t *testing.T) {
 	assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
 	assert.Equal(t, vpcCidr, "10.0.0.0/16")
 	assert.Equal(t, len(vpcSubnets), 2)
+}
+
+func createTerraformOptions(t *testing.T, terraformDir string) (*terraform.Options, *aws.Ec2Keypair) {
+
+	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
+	// Issue found with this is you can come across dodgy regions without as much support and fine code breaks, like
+	// regions not having enough AZ's to support 3 separate subnets in TF code
+	awsRegion := aws.GetRandomStableRegion(t, nil, nil)
+
+	terraformOptions := &terraform.Options{
+		TerraformDir: "../../terraform",
+
+		EnvVars: map[string]string{
+			"AWS_DEFAULT_REGION": awsRegion,
+		},
+	}
+
+	return terraformOptions
+
 }
