@@ -32,15 +32,15 @@ resource "aws_subnet" "honeypot" {
   }
 }
 
-// resource "aws_internet_gateway" "honeypot" {
-//   vpc_id = "${aws_vpc.honeypot.id}"
-// 
-//   tags {
-//     app_id   = "xibalba"
-//     app_role = "networking"
-//   }
-// }
-// 
+resource "aws_internet_gateway" "honeypot" {
+  vpc_id = "${aws_vpc.honeypot.id}"
+
+  tags {
+    app_id   = "xibalba"
+    app_role = "networking"
+  }
+}
+
 // resource "aws_route_table" "honeypot" {
 //   vpc_id = "${aws_vpc.honeypot.id}"
 // 

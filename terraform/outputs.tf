@@ -5,3 +5,7 @@ output "vpc_id" {
 output "vpc_cidr" {
   value = "${aws_vpc.honeypot.cidr_block}"
 }
+
+output "internet_gateway_id" {
+  value = "${aws_internet_gateway.honeypot.id}"
+}

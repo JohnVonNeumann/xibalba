@@ -35,6 +35,7 @@ func TestTerraformVpcTemplate(t *testing.T) {
 
     vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
     vpcId := terraform.Output(t, terraformOptions, "vpc_id")
+    igwId := terraform.Output(t, terraformOptions, "internet_gateway_id")
     vpcSubnets := aws.GetSubnetsForVpc(t, vpcId, awsRegion)
 
     var subnetList []string
@@ -46,7 +47,7 @@ func TestTerraformVpcTemplate(t *testing.T) {
     cfg.Region = awsRegion
     client := ec2.New(cfg)
 
-    params := &ec2.DescribeSubnetsInput{
+    subnetParams := &ec2.DescribeSubnetsInput{
             Filters: []ec2.Filter{
                     {
                             Name: aws2.String("subnet-id"),
@@ -55,14 +56,29 @@ func TestTerraformVpcTemplate(t *testing.T) {
             },
     }
 
-    req := client.DescribeSubnetsRequest(params)
+    subnetReq := client.DescribeSubnetsRequest(subnetParams)
 
-    resp, _ := req.Send()
+    subnetResp, _ := subnetReq.Send()
 
     var subnetCidrList []string
-    for _, subnet := range resp.Subnets {
+    for _, subnet := range subnetResp.Subnets {
       subnetCidrList = append(subnetCidrList, *subnet.CidrBlock)
     }
+
+    igwList := []string{igwId}
+    igwParams := &ec2.DescribeInternetGatewaysInput{
+            Filters: []ec2.Filter{
+                    {
+                            Name: aws2.String("internet-gateway-id"),
+                            Values: igwList,
+                    },
+            },
+    }
+
+    igwReq := client.DescribeInternetGatewaysRequest(igwParams)
+    igwResp, _ := igwReq.Send()
+
+    fmt.Println(igwResp)
 
     acceptableCidrList := [2]string{"10.0.0.0/28","10.0.1.0/28"}
 
