@@ -23,7 +23,7 @@ resource "aws_subnet" "honeypot" {
   count = 2
 
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
-  cidr_block        = "10.0.${count.index}.0/24"
+  cidr_block        = "10.0.${count.index}.0/28"
   vpc_id            = "${aws_vpc.honeypot.id}"
 
   tags {
