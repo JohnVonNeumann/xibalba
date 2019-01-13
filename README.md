@@ -10,6 +10,7 @@ Xibalba is a simple project for hosting an SSH honeypot, the hosts will be open 
 * Set up host level security
 * Set up bake and provision pipeline
 * Set up monitoring/logging
+* Set up automated pentesting/recon and attacking via separate boxes
 
 ## Technologies currently/planned to be used in this project
 
