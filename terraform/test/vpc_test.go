@@ -31,7 +31,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		terraform.InitAndApply(t, terraformOptions)
 	})
 
-	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
+	test_structure.RunTestStage(t, "test VPC cidr is acceptable", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testVpcCidrIsCorrect(t, terraformOptions)
+	})
+
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
@@ -87,7 +91,6 @@ func TestTerraformVpcTemplate(t *testing.T) {
 	acceptableCidrList := [2]string{"10.0.0.0/28", "10.0.1.0/28"}
 
 	assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
-	assert.Equal(t, vpcCidr, "10.0.0.0/16")
 	assert.Equal(t, len(vpcSubnets), 2)
 }
 
@@ -108,4 +111,13 @@ func createTerraformOptions(t *testing.T, terraformDir string) (*terraform.Optio
 
 	return terraformOptions
 
+}
+
+// test: testVpcCidrIsCorrect
+// assert that the user configured vpcCidr within the terraform template is
+// an acceptable value
+func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraformOptions) {
+	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
+
+	assert.Equal(t, vpcCidr, "10.0.0.0/16")
 }
