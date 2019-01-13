@@ -36,6 +36,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testVpcCidrIsCorrect(t, terraformOptions)
 	})
 
+	test_structure.RunTestStage(t, "test VPC subnet count", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testVpcSubnetCount(t, terraformOptions)
+	})
+
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
@@ -91,7 +96,6 @@ func TestTerraformVpcTemplate(t *testing.T) {
 	acceptableCidrList := [2]string{"10.0.0.0/28", "10.0.1.0/28"}
 
 	assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
-	assert.Equal(t, len(vpcSubnets), 2)
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) (*terraform.Options, *aws.Ec2Keypair) {
@@ -120,4 +124,14 @@ func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraformOptions) {
 	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
 
 	assert.Equal(t, vpcCidr, "10.0.0.0/16")
+}
+
+// test: testVpcSubnetCount
+// assert that the VPC we have created is associated with the correct amount of
+// subnets
+func testVpcSubnetCount(t *testing.T, terraformOptions *terraformOptions) {
+	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
+	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
+
+	assert.Equal(t, len(vpcSubnets), 2)
 }
