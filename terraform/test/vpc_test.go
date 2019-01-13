@@ -46,37 +46,6 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testSubnetCidrs(t, terraformOptions)
 	})
 
-	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
-	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
-	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
-
-	cfg, _ := external.LoadDefaultAWSConfig()
-	// this will have to be sourced into the funcs themselves
-	fmt.Println(cfg.Region)
-	cfg.Region = awsRegion
-	client := ec2.New(cfg)
-
-	igwList := []string{igwID}
-	igwParams := &ec2.DescribeInternetGatewaysInput{
-		Filters: []ec2.Filter{
-			{
-				Name:   aws2.String("internet-gateway-id"),
-				Values: igwList,
-			},
-		},
-	}
-
-	igwReq := client.DescribeInternetGatewaysRequest(igwParams)
-	igwResp, _ := igwReq.Send()
-
-	// test that igw has attachments in available state
-
-	// test that the vpc is the correct vpc
-
-	// test that the vpc has an internet gateway
-
-	fmt.Println(igwResp)
-
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) (*terraform.Options, *aws.Ec2Keypair) {
@@ -155,4 +124,35 @@ func testSubnetCidrs(t *testing.T, terraformOptions *terraformOptions) {
 	acceptableCidrList := [2]string{"10.0.0.0/28", "10.0.1.0/28"}
 
 	assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
+}
+
+// test that igw has attachments in available state
+func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraformOptions) {
+
+	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
+
+	cfg, _ := external.LoadDefaultAWSConfig()
+	// this will have to be sourced into the funcs themselves
+	fmt.Println(cfg.Region)
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
+
+	igwList := []string{igwID}
+	igwParams := &ec2.DescribeInternetGatewaysInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("internet-gateway-id"),
+				Values: igwList,
+			},
+		},
+	}
+
+	igwReq := client.DescribeInternetGatewaysRequest(igwParams)
+	igwResp, _ := igwReq.Send()
+
+	// test that the vpc is the correct vpc
+
+	// test that the vpc has an internet gateway
+
+	fmt.Println(igwResp)
 }
