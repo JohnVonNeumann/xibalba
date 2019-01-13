@@ -58,6 +58,10 @@ func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Option
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../../terraform",
 
+		Vars: map[string]interface{}{
+			"aws_region": awsRegion,
+		},
+
 		EnvVars: map[string]string{
 			"AWS_DEFAULT_REGION": awsRegion,
 		},
@@ -80,6 +84,7 @@ func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraform.Options) {
 // assert that the VPC we have created is associated with the correct amount of
 // subnets
 func testVpcSubnetCount(t *testing.T, terraformOptions *terraform.Options) {
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
 
@@ -91,6 +96,7 @@ func testVpcSubnetCount(t *testing.T, terraformOptions *terraform.Options) {
 // subnet masks are also correct
 func testSubnetCidrs(t *testing.T, terraformOptions *terraform.Options) {
 
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
 
@@ -129,6 +135,7 @@ func testSubnetCidrs(t *testing.T, terraformOptions *terraform.Options) {
 // test that igw has attachments in available state
 func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Options) {
 
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 
 	cfg, _ := external.LoadDefaultAWSConfig()
