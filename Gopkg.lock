@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:d3bff6ab5222314d8574b31d744cce3c17315698964f904fd89ff0b1ee742d1e"
+  digest = "1:17632b96c871d941111bfa7a41e9b18f189a9096f933f6e9058bde0df76f162f"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -55,8 +55,8 @@
     "service/sts",
   ]
   pruneopts = "UT"
-  revision = "62936e15518acb527a1a9cb4a39d96d94d0fd9a2"
-  version = "v1.16.15"
+  revision = "aabf189db35ba7eb5a35afe6d681fc0f70954fca"
+  version = "v1.16.18"
 
 [[projects]]
   digest = "1:abb9e396a89827531b69f68252a5d92e7a6b3ae865cd5c8c259d9401cef36376"
@@ -125,7 +125,7 @@
   version = "0.2"
 
 [[projects]]
-  digest = "1:a4ac3cf3ecf87e3fcc7b17a83cac41066e8aa5ed472977684b90c9a87e21f94b"
+  digest = "1:23bf221eee588d48464c2b80b844e2f575eba54bd271a91bbfd7e0d823eaeebe"
   name = "github.com/gruntwork-io/terratest"
   packages = [
     "modules/aws",
@@ -133,15 +133,17 @@
     "modules/customerrors",
     "modules/files",
     "modules/logger",
+    "modules/packer",
     "modules/random",
     "modules/retry",
     "modules/shell",
     "modules/ssh",
     "modules/terraform",
+    "modules/test-structure",
   ]
   pruneopts = "UT"
-  revision = "da848892d7e2822604027814f5402743eb1c292c"
-  version = "v0.13.20"
+  revision = "f8ce84b0f4edcb6d2b6d4c5c40e497a645eb8df6"
+  version = "v0.13.21"
 
 [[projects]]
   digest = "1:bb81097a5b62634f3e9fec1014657855610c82d19b9a40c17612e32651e35dca"
@@ -204,7 +206,7 @@
   name = "golang.org/x/net"
   packages = ["context"]
   pruneopts = "UT"
-  revision = "45ffb0cd1ba084b73e26dee67e667e1be5acce83"
+  revision = "915654e7eabcea33ae277abbecf52f0d8b7a9fdc"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
@@ -218,10 +220,12 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/aws/aws-sdk-go-v2/aws",
     "github.com/aws/aws-sdk-go-v2/aws/external",
     "github.com/aws/aws-sdk-go-v2/service/ec2",
     "github.com/gruntwork-io/terratest/modules/aws",
     "github.com/gruntwork-io/terratest/modules/terraform",
+    "github.com/gruntwork-io/terratest/modules/test-structure",
     "github.com/stretchr/testify/assert",
   ]
   solver-name = "gps-cdcl"
