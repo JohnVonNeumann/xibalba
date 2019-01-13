@@ -41,36 +41,20 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testVpcSubnetCount(t, terraformOptions)
 	})
 
+	test_structure.RunTestStage(t, "test subnet cidrs", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testSubnetCidrs(t, terraformOptions)
+	})
+
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
 
-	var subnetList []string
-	for _, subnet := range vpcSubnets {
-		subnetList = append(subnetList, subnet.Id)
-	}
-
 	cfg, _ := external.LoadDefaultAWSConfig()
+	// this will have to be sourced into the funcs themselves
+	fmt.Println(cfg.Region)
 	cfg.Region = awsRegion
 	client := ec2.New(cfg)
-
-	subnetParams := &ec2.DescribeSubnetsInput{
-		Filters: []ec2.Filter{
-			{
-				Name:   aws2.String("subnet-id"),
-				Values: subnetList,
-			},
-		},
-	}
-
-	subnetReq := client.DescribeSubnetsRequest(subnetParams)
-
-	subnetResp, _ := subnetReq.Send()
-
-	var subnetCidrList []string
-	for _, subnet := range subnetResp.Subnets {
-		subnetCidrList = append(subnetCidrList, *subnet.CidrBlock)
-	}
 
 	igwList := []string{igwID}
 	igwParams := &ec2.DescribeInternetGatewaysInput{
@@ -93,9 +77,6 @@ func TestTerraformVpcTemplate(t *testing.T) {
 
 	fmt.Println(igwResp)
 
-	acceptableCidrList := [2]string{"10.0.0.0/28", "10.0.1.0/28"}
-
-	assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) (*terraform.Options, *aws.Ec2Keypair) {
@@ -134,4 +115,44 @@ func testVpcSubnetCount(t *testing.T, terraformOptions *terraformOptions) {
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
 
 	assert.Equal(t, len(vpcSubnets), 2)
+}
+
+// test: testSubnetCidrs
+// assert that the subnet cidrs are within the correct range and that the
+// subnet masks are also correct
+func testSubnetCidrs(t *testing.T, terraformOptions *terraformOptions) {
+
+	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
+	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
+
+	var subnetList []string
+	for _, subnet := range vpcSubnets {
+		subnetList = append(subnetList, subnet.Id)
+	}
+
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
+
+	subnetParams := &ec2.DescribeSubnetsInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("subnet-id"),
+				Values: subnetList,
+			},
+		},
+	}
+
+	subnetReq := client.DescribeSubnetsRequest(subnetParams)
+
+	subnetResp, _ := subnetReq.Send()
+
+	var subnetCidrList []string
+	for _, subnet := range subnetResp.Subnets {
+		subnetCidrList = append(subnetCidrList, *subnet.CidrBlock)
+	}
+
+	acceptableCidrList := [2]string{"10.0.0.0/28", "10.0.1.0/28"}
+
+	assert.ElementsMatch(t, subnetCidrList, acceptableCidrList)
 }
