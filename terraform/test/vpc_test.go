@@ -24,7 +24,7 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		terraform.Destroy(t, terraformOptions)
 	})
 
-	test.structure.RunTestStage(t, "setup", func() {
+	test_structure.RunTestStage(t, "setup", func() {
 		terraformOptions := createTerraformOptions(t, terraformDir)
 		test_structure.SaveTerraformOptions(t, terraformDir, terraformOptions)
 
@@ -48,7 +48,7 @@ func TestTerraformVpcTemplate(t *testing.T) {
 
 }
 
-func createTerraformOptions(t *testing.T, terraformDir string) (*terraform.Options, *aws.Ec2Keypair) {
+func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	// Issue found with this is you can come across dodgy regions without as much support and fine code breaks, like
@@ -70,7 +70,7 @@ func createTerraformOptions(t *testing.T, terraformDir string) (*terraform.Optio
 // test: testVpcCidrIsCorrect
 // assert that the user configured vpcCidr within the terraform template is
 // an acceptable value
-func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraformOptions) {
+func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraform.Options) {
 	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
 
 	assert.Equal(t, vpcCidr, "10.0.0.0/16")
@@ -79,7 +79,7 @@ func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraformOptions) {
 // test: testVpcSubnetCount
 // assert that the VPC we have created is associated with the correct amount of
 // subnets
-func testVpcSubnetCount(t *testing.T, terraformOptions *terraformOptions) {
+func testVpcSubnetCount(t *testing.T, terraformOptions *terraform.Options) {
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
 
@@ -89,7 +89,7 @@ func testVpcSubnetCount(t *testing.T, terraformOptions *terraformOptions) {
 // test: testSubnetCidrs
 // assert that the subnet cidrs are within the correct range and that the
 // subnet masks are also correct
-func testSubnetCidrs(t *testing.T, terraformOptions *terraformOptions) {
+func testSubnetCidrs(t *testing.T, terraformOptions *terraform.Options) {
 
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
@@ -127,7 +127,7 @@ func testSubnetCidrs(t *testing.T, terraformOptions *terraformOptions) {
 }
 
 // test that igw has attachments in available state
-func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraformOptions) {
+func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Options) {
 
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 
