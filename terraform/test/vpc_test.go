@@ -46,6 +46,10 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testSubnetCidrs(t, terraformOptions)
 	})
 
+	test_structure.RunTestStage(t, "test igw attachments exist", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testIgwAttachmentsAreAvailable(t, terraformOptions)
+	})
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -157,9 +161,28 @@ func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Op
 	igwReq := client.DescribeInternetGatewaysRequest(igwParams)
 	igwResp, _ := igwReq.Send()
 
-	// test that the vpc is the correct vpc
-
-	// test that the vpc has an internet gateway
-
 	fmt.Println(igwResp)
+
+	// there should only be one attachment
+	// so we shouldnt create a list
+	// it should just be a var that we populate
+	var igwAttachmentList []string
+	for _, igw := range igwResp.InternetGateways {
+		for _, attachment := range igw.Attachments {
+			fmt.Println(attachment)
+
+			// *attachment.State fails append operation because it is not a str
+			// this can be seen by the output of `go test` as so
+			// {
+			//  State: available,
+			//  VpcId: "vpc-0348d3dd71082fbbf"
+			// }
+			igwAttachmentList = append(igwAttachmentList, *attachment.VpcId)
+		}
+	}
+	fmt.Println(igwAttachmentList)
 }
+
+// test that the vpc is the correct vpc
+
+// test that the vpc has an internet gateway
