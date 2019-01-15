@@ -49,6 +49,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
 		testIgwAttachmentsAreAvailable(t, terraformOptions)
 	})
+
+	test_structure.RunTestStage(t, "test igw attachments vpcId are correct", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testIgwIsAttachingToCorrectVpc(t, terraformOptions)
+	})
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -172,5 +177,39 @@ func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Op
 }
 
 // test that the vpc is the correct vpc
+func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Options) {
+
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
+	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
+	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
+
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
+
+	igwList := []string{igwID}
+	igwParams := &ec2.DescribeInternetGatewaysInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("internet-gateway-id"),
+				Values: igwList,
+			},
+		},
+	}
+
+	igwReq := client.DescribeInternetGatewaysRequest(igwParams)
+	igwResp, _ := igwReq.Send()
+
+	var igwAttachmentList []string
+	for _, igw := range igwResp.InternetGateways {
+		for _, attachment := range igw.Attachments {
+			igwAttachmentList = append(igwAttachmentList, *attachment.VpcId)
+		}
+	}
+
+	for _, igwAttachment := range igwAttachmentList {
+		assert.Equal(t, igwAttachment, vpcID)
+	}
+}
 
 // test that the vpc has an internet gateway
