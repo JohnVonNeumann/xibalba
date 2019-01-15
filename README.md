@@ -4,6 +4,9 @@
 
 Xibalba is a simple project for hosting an SSH honeypot, the hosts will be open to the world on `0.0.0.0:22` and all failed attempts to access the host will be recorded in an attempt to create a usable dataset. The project will be supported by a solid DevOps process, where nightly rebuilds of the host will be the norm, in order to ensure that the box stays secure and well supported. This is an attempt to not only learn more about DevOps, but also DevSecOps, an area I have a lot of interest in.
 
+I am streaming the development of this repository over at Twitch, to see times and other information, visit:
+https://www.twitch.tv/janosvonneumann
+
 ## To do
 * Implement CI tooling around the repository to automate test runs, linting, blah
 * Git hooks for better local environment level testing/linting
