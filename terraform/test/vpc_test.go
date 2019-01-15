@@ -82,22 +82,22 @@ func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Option
 // test: testVpcCidrIsCorrect
 // assert that the user configured vpcCidr within the terraform template is
 // an acceptable value
-func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraform.Options) {
+func testVpcCidrIsCorrect(t *testing.T, terraformOptions *terraform.Options) { // {{{
 	vpcCidr := terraform.Output(t, terraformOptions, "vpc_cidr")
 
 	assert.Equal(t, vpcCidr, "10.0.0.0/16")
-}
+} // }}}
 
 // test: testVpcSubnetCount
 // assert that the VPC we have created is associated with the correct amount of
 // subnets
-func testVpcSubnetCount(t *testing.T, terraformOptions *terraform.Options) {
+func testVpcSubnetCount(t *testing.T, terraformOptions *terraform.Options) { // {{{
 	awsRegion := terraformOptions.Vars["aws_region"].(string)
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
 
 	assert.Equal(t, len(vpcSubnets), 2)
-}
+} // }}}
 
 // test: testSubnetCidrs
 // assert that the subnet cidrs are within the correct range and that the
@@ -211,5 +211,3 @@ func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Op
 		assert.Equal(t, igwAttachment, vpcID)
 	}
 }
-
-// test that the vpc has an internet gateway
