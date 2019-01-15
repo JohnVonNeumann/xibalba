@@ -177,7 +177,7 @@ func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Op
 			//  State: available,
 			//  VpcId: "vpc-0348d3dd71082fbbf"
 			// }
-			igwAttachmentList = append(igwAttachmentList, *attachment.VpcId)
+			igwAttachmentList = append(igwAttachmentList, string(attachment.State))
 		}
 	}
 	fmt.Println(igwAttachmentList)
