@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
@@ -143,8 +142,6 @@ func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Op
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 
 	cfg, _ := external.LoadDefaultAWSConfig()
-	// this will have to be sourced into the funcs themselves
-	fmt.Println(cfg.Region)
 	cfg.Region = awsRegion
 	client := ec2.New(cfg)
 
@@ -161,26 +158,17 @@ func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Op
 	igwReq := client.DescribeInternetGatewaysRequest(igwParams)
 	igwResp, _ := igwReq.Send()
 
-	fmt.Println(igwResp)
-
-	// there should only be one attachment
-	// so we shouldnt create a list
-	// it should just be a var that we populate
 	var igwAttachmentList []string
 	for _, igw := range igwResp.InternetGateways {
 		for _, attachment := range igw.Attachments {
-			fmt.Println(attachment)
-
-			// *attachment.State fails append operation because it is not a str
-			// this can be seen by the output of `go test` as so
-			// {
-			//  State: available,
-			//  VpcId: "vpc-0348d3dd71082fbbf"
-			// }
 			igwAttachmentList = append(igwAttachmentList, string(attachment.State))
 		}
 	}
-	fmt.Println(igwAttachmentList)
+
+	for _, igwAttachment := range igwAttachmentList {
+		assert.Equal(t, igwAttachment, "available")
+	}
+
 }
 
 // test that the vpc is the correct vpc
