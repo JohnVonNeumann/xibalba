@@ -9,3 +9,7 @@ output "vpc_cidr" {
 output "internet_gateway_id" {
   value = "${aws_internet_gateway.honeypot.id}"
 }
+
+output "main_route_table_id" {
+  value = "${aws_vpc.honeypot.main_route_table_id}"
+}
