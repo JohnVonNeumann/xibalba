@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
@@ -178,7 +179,7 @@ func testIgwAttachmentsAreAvailable(t *testing.T, terraformOptions *terraform.Op
 
 // test that the vpc is the correct vpc
 func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Options) {
-
+	// {{{
 	awsRegion := terraformOptions.Vars["aws_region"].(string)
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
@@ -210,4 +211,25 @@ func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Op
 	for _, igwAttachment := range igwAttachmentList {
 		assert.Equal(t, igwAttachment, vpcID)
 	}
+	mainRouteTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
+	fmt.Println(mainRouteTableID)
 }
+
+// }}}
+
+// test route table count is 1 via the aws_route_tables data source
+// https://www.terraform.io/docs/providers/aws/d/route_tables.html
+func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options) {
+
+}
+
+// test that there are only two route_table_associations for the vpc
+// as we will only have two subnets, we should only have two assocs
+
+// test that the route table has only the amount of routes that we are
+// after, im thinking that number is 3, one for the IGW, and two for
+// each subnet, however i could be wrong entirely, as i believe that
+// any traffic to any ip within the 10.0.0.0/24 range will be routed
+// internally as a result of the `local` target dest declaration
+// UPDATE: turns out this was incorrect we will only need the single route
+// and that will be for the 0.0.0.0 route
