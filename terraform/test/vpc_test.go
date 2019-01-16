@@ -221,6 +221,8 @@ func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Op
 // https://www.terraform.io/docs/providers/aws/d/route_tables.html
 func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options) {
 
+	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
+
 }
 
 // test that there are only two route_table_associations for the vpc
@@ -233,3 +235,14 @@ func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options
 // internally as a result of the `local` target dest declaration
 // UPDATE: turns out this was incorrect we will only need the single route
 // and that will be for the 0.0.0.0 route
+
+// test that the route table that we create is the main_route_table_id
+
+// test that we have a internet facing route (0.0.0.0/0) in our route table
+
+// test that there is only one internet facing route
+
+// testing aws_route_table_assocs in general is probably not a very good use
+// of time as we are utilising all the available parameters for the resource
+// and both are required for use, basically, there is no room for error in
+// user input, therefore, no need to test
