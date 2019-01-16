@@ -227,6 +227,9 @@ func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options
 
 // test that there are only two route_table_associations for the vpc
 // as we will only have two subnets, we should only have two assocs
+func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform.Options) {
+
+}
 
 // test that the route table has only the amount of routes that we are
 // after, im thinking that number is 3, one for the IGW, and two for
@@ -235,12 +238,24 @@ func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options
 // internally as a result of the `local` target dest declaration
 // UPDATE: turns out this was incorrect we will only need the single route
 // and that will be for the 0.0.0.0 route
+func testRouteTableRouteCount(t *testing.T, terraformOptions *terraform.Options) {
+
+}
 
 // test that the route table that we create is the main_route_table_id
+func testMainRouteTableId(t *testing.T, terraformOptions *terraform.Options) {
+
+}
 
 // test that we have a internet facing route (0.0.0.0/0) in our route table
+func testInternetFacingRouteInRouteTable(t *testing.T, terraformOptions *terraform.Options) {
+
+}
 
 // test that there is only one internet facing route
+func testInternetFacingRouteCount(t *testing.T, terraformOptions *terraform.Options) {
+
+}
 
 // testing aws_route_table_assocs in general is probably not a very good use
 // of time as we are utilising all the available parameters for the resource
