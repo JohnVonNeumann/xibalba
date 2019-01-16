@@ -14,6 +14,8 @@ https://www.twitch.tv/janosvonneumann
 * Set up bake and provision pipeline
 * Set up monitoring/logging
 * Set up automated pentesting/recon and attacking via separate boxes
+* Set up vulnerability scanners
+* Set up centralised patch management and audit results
 
 ## Technologies currently/planned to be used in this project
 
