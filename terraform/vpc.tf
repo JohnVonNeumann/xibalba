@@ -43,12 +43,7 @@ resource "aws_internet_gateway" "honeypot" {
 
 // resource "aws_route_table" "honeypot" {
 //   vpc_id = "${aws_vpc.honeypot.id}"
-// 
-//   route {
-//     cidr_block = "0.0.0.0/0"
-//     gateway_id = "${aws_internet_gateway.honeypot.id}"
-//   }
-// 
+//
 //   tags {
 //     app_id   = "xibalba"
 //     app_role = "networking"
@@ -57,12 +52,21 @@ resource "aws_internet_gateway" "honeypot" {
 //
 // resource "aws_route_table_association" "honeypot" {
 //   count = 2
-// 
+//
 //   subnet_id      = "${aws_subnet.honeypot.*.id[count.index]}"
 //   route_table_id = "${aws_route_table.honeypot.id}"
 // }
 
+//resource "aws_main_route_table_association" "a" {
+//  vpc_id         = "${aws_vpc.foo.id}"
+//  route_table_id = "${aws_route_table.bar.id}"
+//}
+
 // resource "aws_route" "honeypot" {
 // count = 2
+//   route {
+//     cidr_block = "0.0.0.0/0"
+//     gateway_id = "${aws_internet_gateway.honeypot.id}"
+//   }
 //
 // }
