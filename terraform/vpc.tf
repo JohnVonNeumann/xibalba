@@ -41,6 +41,14 @@ resource "aws_internet_gateway" "honeypot" {
   }
 }
 
+data "aws_route_table" "default_vpc_route_table" {
+  vpc_id = "${aws_vpc.honeypot.id}"
+}
+
+resource "aws_default_route_table" "honeypot" {
+ default_route_table_id = "${data.aws_route_table.default_vpc_route_table.id}"
+}
+
 // resource "aws_route_table" "honeypot" {
 //   vpc_id = "${aws_vpc.honeypot.id}"
 //
