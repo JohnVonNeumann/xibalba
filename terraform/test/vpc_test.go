@@ -224,26 +224,9 @@ func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Op
 // https://www.terraform.io/docs/providers/aws/d/route_tables.html
 func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options) {
 
-	mainRouteTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
-	fmt.Println(mainRouteTableID)
-	//	 17   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦main_route_table_id: {
-	//   18   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦sensitive¦: false,
-	//   19   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦type¦: ¦string¦,
-	//   20   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦value¦: ¦rtb-0d9b889a840fa7267¦
-
-	//                "main_route_table_id": {
-	//                    "sensitive": false,
-	//                    "type": "string",
-	//                    "value": "rtb-09e44d1f17e30d4c7"
-	// pass the vpcId into a method that finds all the RTs associated with
-	// that vpc
-
-	// create a list/slice with the return data
-	routeTables := terraform.Output(t, terraformOptions, "route_tables")
-	// assert that the count of elements in the list is 1
+	routeTables := terraform.OutputList(t, terraformOptions, "route_tables")
 
 	assert.Len(t, routeTables, 1)
-
 }
 
 // test that there are only two route_table_associations for the vpc
