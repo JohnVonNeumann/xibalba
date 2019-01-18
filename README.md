@@ -39,6 +39,9 @@ https://www.twitch.tv/janosvonneumann
 * OSSec
 * Security Onion
 
+## Todo
+* Work out which SSH honeypot service we wish to use.
+
 ## Usage
 Make sure the environment is populated with the correct envvars to run the TF.
 
