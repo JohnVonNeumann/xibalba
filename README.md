@@ -16,6 +16,11 @@ https://www.twitch.tv/janosvonneumann
 * Set up automated pentesting/recon and attacking via separate boxes
 * Set up vulnerability scanners
 * Set up centralised patch management and audit results
+* Set up prowler in build pipeline
+* Find an implement an appropriate level of compliance, probably CIS
+        - https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf
+* Work out and address issues at each level of the Cyber Kill Chain
+        - https://nigesecurityguy.wordpress.com/tag/cyber-kill-chain/ 
 
 ## Technologies currently/planned to be used in this project
 

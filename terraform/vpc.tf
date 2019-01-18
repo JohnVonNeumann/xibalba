@@ -53,6 +53,10 @@ data "aws_route_tables" "route_tables" {
   vpc_id = "${aws_vpc.honeypot.id}"
 }
 
+// creation of the aws_route_table resource overwrites any
+// existing/default/main route table. then, when the resource is
+// remove from the tf template, the old id of the resource 
+// continues to linger, causing failures
 // resource "aws_route_table" "honeypot" {
 //   vpc_id = "${aws_vpc.honeypot.id}"
 //
