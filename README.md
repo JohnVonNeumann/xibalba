@@ -42,6 +42,9 @@ https://www.twitch.tv/janosvonneumann
 ## Todo
 * Work out which SSH honeypot service we wish to use.
 
+## Shit we've learnt
+* `git commit -am "commit message"` - adds all in working index, and commits directly to avoid multiple commands.
+
 ## Usage
 Make sure the environment is populated with the correct envvars to run the TF.
 
