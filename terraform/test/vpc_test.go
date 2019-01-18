@@ -226,17 +226,23 @@ func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options
 
 	mainRouteTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
 	fmt.Println(mainRouteTableID)
+	//	 17   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦main_route_table_id: {
+	//   18   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦sensitive¦: false,
+	//   19   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦type¦: ¦string¦,
+	//   20   ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦ ¦value¦: ¦rtb-0d9b889a840fa7267¦
 
-	routeTables := terraform.Output(t, terraformOptions, "route_tables")
-
-	fmt.Println(routeTables)
-
+	//                "main_route_table_id": {
+	//                    "sensitive": false,
+	//                    "type": "string",
+	//                    "value": "rtb-09e44d1f17e30d4c7"
 	// pass the vpcId into a method that finds all the RTs associated with
 	// that vpc
 
 	// create a list/slice with the return data
-
+	routeTables := terraform.Output(t, terraformOptions, "route_tables")
 	// assert that the count of elements in the list is 1
+
+	assert.Len(t, routeTables, 1)
 
 }
 
@@ -258,6 +264,8 @@ func testRouteTableRouteCount(t *testing.T, terraformOptions *terraform.Options)
 }
 
 // test that the route table that we create is the main_route_table_id
+// this needs to change in terms of scope, it needs to test that the originally
+// created route table is the default and under our control
 func testMainRouteTableId(t *testing.T, terraformOptions *terraform.Options) {
 
 }
