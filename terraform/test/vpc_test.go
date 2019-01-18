@@ -55,6 +55,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
 		testIgwIsAttachingToCorrectVpc(t, terraformOptions)
 	})
+
+	test_structure.RunTestStage(t, "test route table count for vpc", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testRouteTableCountForVpc(t, terraformOptions)
+	})
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -211,8 +216,6 @@ func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Op
 	for _, igwAttachment := range igwAttachmentList {
 		assert.Equal(t, igwAttachment, vpcID)
 	}
-	mainRouteTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
-	fmt.Println(mainRouteTableID)
 }
 
 // }}}
@@ -221,7 +224,19 @@ func testIgwIsAttachingToCorrectVpc(t *testing.T, terraformOptions *terraform.Op
 // https://www.terraform.io/docs/providers/aws/d/route_tables.html
 func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options) {
 
-	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
+	mainRouteTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
+	fmt.Println(mainRouteTableID)
+
+	routeTables := terraform.Output(t, terraformOptions, "route_tables")
+
+	fmt.Println(routeTables)
+
+	// pass the vpcId into a method that finds all the RTs associated with
+	// that vpc
+
+	// create a list/slice with the return data
+
+	// assert that the count of elements in the list is 1
 
 }
 

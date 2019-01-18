@@ -17,4 +17,3 @@ output "main_route_table_id" {
 output "route_tables" {
   value = "${data.aws_route_tables.route_tables.ids}"
 }
-
