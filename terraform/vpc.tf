@@ -60,10 +60,6 @@ resource "aws_route_table_association" "honeypot" {
   route_table_id = "${aws_default_route_table.honeypot.id}"
 }
 
-data "aws_route_table" "default_vpc_route_table_updated" {
-  vpc_id = "${aws_vpc.honeypot.id}"
-}
-
 //resource "aws_main_route_table_association" "a" {
 //  vpc_id         = "${aws_vpc.foo.id}"
 //  route_table_id = "${aws_route_table.bar.id}"

@@ -239,15 +239,56 @@ func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options
 // as we will only have two subnets, we should only have two assocs
 func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform.Options) {
 
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
+	routeTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
 	// using the attributes, find the number of elements for rt_assocs
-	routeTableAssociations := terraform.OutputList(t, terraformOptions, "route_table_associations")
-	rtAssociations := terraform.OutputList(t, terraformOptions, "rt_associations")
 
-	fmt.Println(routeTableAssociations)
-	fmt.Println(rtAssociations)
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
 
-	// assert that this number is within our acceptance bounds
-	assert.Len(t, routeTableAssociations, 3)
+	rtList := []string{routeTableID}
+	rtParams := &ec2.DescribeRouteTablesInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("route-table-id"),
+				Values: rtList,
+			},
+		},
+	}
+
+	rtReq := client.DescribeRouteTablesRequest(rtParams)
+	rtResp, _ := rtReq.Send()
+
+	// instead of looping, as I believe we don't need the information inside
+	// the elements, we could simply take a count of the Associations inside
+	// the RouteTables data struct, and then verify it is within our bounds
+
+	var rtAssociationCount int
+	for _, rt := range rtResp.RouteTables {
+		rtAssociationCount = len(rt.Associations)
+	}
+	fmt.Println(rtAssociationCount)
+
+	// 		for _, association := range rt.Associations {
+	// 			fmt.Println(association)
+	// 			rtAssociationCount += 1
+	// 			fmt.Println(rtAssociationCount)
+	// 		}
+	// 	}
+
+	//					rtAssociationList = append(rtAssociationList,
+	//	for _, igw := range igwResp.InternetGateways {
+	//		for _, attachment := range igw.Attachments {
+	//			igwAttachmentList = append(igwAttachmentList, *attachment.VpcId)
+	//		}
+	//	}
+	//
+	//	for _, igwAttachment := range igwAttachmentList {
+	//		assert.Equal(t, igwAttachment, vpcID)
+	//	}
+	//	// assert that this number is within our acceptance bounds
+	//	assert.Len(t, routeTableAssociations, 3)
 
 }
 
