@@ -235,8 +235,9 @@ func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options
 	assert.Len(t, routeTables, 1)
 }
 
-// test that there are only two route_table_associations for the vpc
-// as we will only have two subnets, we should only have two assocs
+// test that there are three route_table_associations for the vpc
+// as we will only have two subnets, we should only have three assocs
+// with an addtional for the default/main assoc
 func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform.Options) {
 
 	awsRegion := terraformOptions.Vars["aws_region"].(string)
@@ -264,7 +265,6 @@ func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform
 	for _, rt := range rtResp.RouteTables {
 		rtAssociationCount = len(rt.Associations)
 	}
-	fmt.Println(rtAssociationCount)
 
 	//	// assert that this number is within our acceptance bounds
 	assert.Equal(t, rtAssociationCount, 3)
