@@ -260,35 +260,14 @@ func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform
 	rtReq := client.DescribeRouteTablesRequest(rtParams)
 	rtResp, _ := rtReq.Send()
 
-	// instead of looping, as I believe we don't need the information inside
-	// the elements, we could simply take a count of the Associations inside
-	// the RouteTables data struct, and then verify it is within our bounds
-
 	var rtAssociationCount int
 	for _, rt := range rtResp.RouteTables {
 		rtAssociationCount = len(rt.Associations)
 	}
 	fmt.Println(rtAssociationCount)
 
-	// 		for _, association := range rt.Associations {
-	// 			fmt.Println(association)
-	// 			rtAssociationCount += 1
-	// 			fmt.Println(rtAssociationCount)
-	// 		}
-	// 	}
-
-	//					rtAssociationList = append(rtAssociationList,
-	//	for _, igw := range igwResp.InternetGateways {
-	//		for _, attachment := range igw.Attachments {
-	//			igwAttachmentList = append(igwAttachmentList, *attachment.VpcId)
-	//		}
-	//	}
-	//
-	//	for _, igwAttachment := range igwAttachmentList {
-	//		assert.Equal(t, igwAttachment, vpcID)
-	//	}
 	//	// assert that this number is within our acceptance bounds
-	//	assert.Len(t, routeTableAssociations, 3)
+	assert.Equal(t, rtAssociationCount, 3)
 
 }
 
