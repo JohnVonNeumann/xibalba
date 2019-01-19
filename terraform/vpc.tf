@@ -53,12 +53,16 @@ data "aws_route_tables" "route_tables" {
   vpc_id = "${aws_vpc.honeypot.id}"
 }
 
-// resource "aws_route_table_association" "honeypot" {
-//   count = 2
-//
-//   subnet_id      = "${aws_subnet.honeypot.*.id[count.index]}"
-//   route_table_id = "${aws_route_table.honeypot.id}"
-// }
+resource "aws_route_table_association" "honeypot" {
+  count = 2
+
+  subnet_id      = "${aws_subnet.honeypot.*.id[count.index]}"
+  route_table_id = "${aws_default_route_table.honeypot.id}"
+}
+
+data "aws_route_table" "default_vpc_route_table_updated" {
+  vpc_id = "${aws_vpc.honeypot.id}"
+}
 
 //resource "aws_main_route_table_association" "a" {
 //  vpc_id         = "${aws_vpc.foo.id}"

@@ -60,6 +60,12 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
 		testRouteTableCountForVpc(t, terraformOptions)
 	})
+
+	test_structure.RunTestStage(t, "test rt attachment count is correct", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testVpcRouteTableAssociationCount(t, terraformOptions)
+	})
+
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -232,6 +238,16 @@ func testRouteTableCountForVpc(t *testing.T, terraformOptions *terraform.Options
 // test that there are only two route_table_associations for the vpc
 // as we will only have two subnets, we should only have two assocs
 func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform.Options) {
+
+	// using the attributes, find the number of elements for rt_assocs
+	routeTableAssociations := terraform.OutputList(t, terraformOptions, "route_table_associations")
+	rtAssociations := terraform.OutputList(t, terraformOptions, "rt_associations")
+
+	fmt.Println(routeTableAssociations)
+	fmt.Println(rtAssociations)
+
+	// assert that this number is within our acceptance bounds
+	assert.Len(t, routeTableAssociations, 3)
 
 }
 
