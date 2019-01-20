@@ -14,10 +14,11 @@ output "main_route_table_id" {
   value = "${aws_vpc.honeypot.main_route_table_id}"
 }
 
-output "rt_associations" {
-  value = "${aws_route_table_association.honeypot.*.id}"
-}
-
 output "route_tables" {
   value = "${data.aws_route_tables.route_tables.ids}"
 }
+
+output "routes" {
+  value = "${data.aws_route_table.default_vpc_route_table.routes}"
+}
+

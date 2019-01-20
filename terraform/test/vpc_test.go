@@ -66,6 +66,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testVpcRouteTableAssociationCount(t, terraformOptions)
 	})
 
+	test_structure.RunTestStage(t, "test rt attachment count is correct", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testRouteTableRouteCount(t, terraformOptions)
+	})
+
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -278,7 +283,11 @@ func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform
 // internally as a result of the `local` target dest declaration
 // UPDATE: turns out this was incorrect we will only need the single route
 // and that will be for the 0.0.0.0 route
+// route 1 - dest 0.0.0.0 - target igw
 func testRouteTableRouteCount(t *testing.T, terraformOptions *terraform.Options) {
+
+	routes := terraform.Output(t, terraformOptions, "routes")
+	fmt.Println(routes)
 
 }
 
