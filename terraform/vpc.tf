@@ -65,11 +65,8 @@ resource "aws_route_table_association" "honeypot" {
 //  route_table_id = "${aws_route_table.bar.id}"
 //}
 
-// resource "aws_route" "honeypot" {
-// count = 2
-//   route {
-//     cidr_block = "0.0.0.0/0"
-//     gateway_id = "${aws_internet_gateway.honeypot.id}"
-//   }
-//
-// }
+resource "aws_route" "honeypot" {
+  route_table_id = "${aws_default_route_table.honeypot.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id = "${aws_internet_gateway.honeypot.id}"
+}

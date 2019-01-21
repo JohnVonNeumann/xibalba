@@ -22,3 +22,7 @@ output "routes" {
   value = "${data.aws_route_table.default_vpc_route_table.routes}"
 }
 
+output "route_table_id" {
+  value = "${aws_default_route_table.honeypot.id}"
+}
+

@@ -8,6 +8,8 @@ I am streaming the development of this repository over at Twitch, to see times a
 https://www.twitch.tv/janosvonneumann
 
 ## To do
+* Run through the Gruntwork Production Infrastructure checklist and tick off the items.
+        > https://gruntwork.io/devops-checklist/
 * Implement CI tooling around the repository to automate test runs, linting, blah
 * Git hooks for better local environment level testing/linting
 * Set up host level security

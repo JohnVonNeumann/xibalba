@@ -272,7 +272,7 @@ func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform
 	}
 
 	//	// assert that this number is within our acceptance bounds
-	assert.Equal(t, rtAssociationCount, 3)
+	assert.Equal(t, 3, rtAssociationCount)
 
 }
 
@@ -284,11 +284,38 @@ func testVpcRouteTableAssociationCount(t *testing.T, terraformOptions *terraform
 // UPDATE: turns out this was incorrect we will only need the single route
 // and that will be for the 0.0.0.0 route
 // route 1 - dest 0.0.0.0 - target igw
+// i think what is happening here, is that the data source/outputs.tf is
+// lagging behind the aws api, because i dont seem to get updated info
+// out of my outputs in the same way i do from direct aws-sdk calls
+// i should probably just bloody learn how the outputs are generated
 func testRouteTableRouteCount(t *testing.T, terraformOptions *terraform.Options) {
 
-	routes := terraform.Output(t, terraformOptions, "routes")
-	fmt.Println(routes)
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
+	routeTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
 
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
+
+	rtList := []string{routeTableID}
+	rtParams := &ec2.DescribeRouteTablesInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("route-table-id"),
+				Values: rtList,
+			},
+		},
+	}
+
+	rtReq := client.DescribeRouteTablesRequest(rtParams)
+	rtResp, _ := rtReq.Send()
+
+	var rtRouteCount int
+	for _, rt := range rtResp.RouteTables {
+		rtRouteCount = len(rt.Routes)
+	}
+
+	assert.Equal(t, 2, rtRouteCount)
 }
 
 // test that the route table that we create is the main_route_table_id
