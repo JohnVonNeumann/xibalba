@@ -80,6 +80,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testInternetFacingRouteInRouteTable(t, terraformOptions)
 	})
 
+	test_structure.RunTestStage(t, "test rt contains route to public internet", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testInternetFacingRouteCount(t, terraformOptions)
+	})
+
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -376,9 +381,40 @@ func testInternetFacingRouteInRouteTable(t *testing.T, terraformOptions *terrafo
 // test that there is only one internet facing route
 func testInternetFacingRouteCount(t *testing.T, terraformOptions *terraform.Options) {
 
-}
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
+	routeTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
 
-// testing aws_route_table_assocs in general is probably not a very good use
-// of time as we are utilising all the available parameters for the resource
-// and both are required for use, basically, there is no room for error in
-// user input, therefore, no need to test
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
+
+	rtList := []string{routeTableID}
+	rtParams := &ec2.DescribeRouteTablesInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("route-table-id"),
+				Values: rtList,
+			},
+		},
+	}
+
+	rtReq := client.DescribeRouteTablesRequest(rtParams)
+	rtResp, _ := rtReq.Send()
+
+	var rtRouteDestinations []string
+	for _, rt := range rtResp.RouteTables {
+		for _, route := range rt.Routes {
+
+			rtRouteDestinations = append(rtRouteDestinations, *route.DestinationCidrBlock)
+		}
+	}
+
+	var rtInternetFacingRouteCount int
+	for _, destination := range rtRouteDestinations {
+		if destination == "0.0.0.0/0" {
+			rtInternetFacingRouteCount += 1
+		}
+	}
+
+	assert.Equal(t, rtInternetFacingRouteCount, 1)
+}
