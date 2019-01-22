@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
@@ -66,9 +65,14 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testVpcRouteTableAssociationCount(t, terraformOptions)
 	})
 
-	test_structure.RunTestStage(t, "test rt attachment count is correct", func() {
+	test_structure.RunTestStage(t, "test rt route count is correct", func() {
 		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
 		testRouteTableRouteCount(t, terraformOptions)
+	})
+
+	test_structure.RunTestStage(t, "test rt is being inherited to stack correctly", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testMainRouteTableId(t, terraformOptions)
 	})
 
 }
@@ -322,6 +326,11 @@ func testRouteTableRouteCount(t *testing.T, terraformOptions *terraform.Options)
 // this needs to change in terms of scope, it needs to test that the originally
 // created route table is the default and under our control
 func testMainRouteTableId(t *testing.T, terraformOptions *terraform.Options) {
+
+	automaticRouteTableId := terraform.Output(t, terraformOptions, "main_route_table_id")
+	inheritedRouteTableId := terraform.Output(t, terraformOptions, "route_table_id")
+
+	assert.Equal(t, automaticRouteTableId, inheritedRouteTableId)
 
 }
 
