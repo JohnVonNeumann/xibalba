@@ -75,6 +75,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testMainRouteTableId(t, terraformOptions)
 	})
 
+	test_structure.RunTestStage(t, "test rt contains route to public internet", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testInternetFacingRouteInRouteTable(t, terraformOptions)
+	})
+
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -336,6 +341,35 @@ func testMainRouteTableId(t *testing.T, terraformOptions *terraform.Options) {
 
 // test that we have a internet facing route (0.0.0.0/0) in our route table
 func testInternetFacingRouteInRouteTable(t *testing.T, terraformOptions *terraform.Options) {
+
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
+	routeTableID := terraform.Output(t, terraformOptions, "main_route_table_id")
+
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
+
+	rtList := []string{routeTableID}
+	rtParams := &ec2.DescribeRouteTablesInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("route-table-id"),
+				Values: rtList,
+			},
+		},
+	}
+
+	rtReq := client.DescribeRouteTablesRequest(rtParams)
+	rtResp, _ := rtReq.Send()
+
+	var rtRouteDestinations []string
+	for _, rt := range rtResp.RouteTables {
+		for _, route := range rt.Routes {
+			rtRouteDestinations = append(rtRouteDestinations, *route.DestinationCidrBlock)
+		}
+	}
+
+	assert.Contains(t, rtRouteDestinations, "0.0.0.0/0")
 
 }
 
