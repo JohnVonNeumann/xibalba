@@ -418,3 +418,6 @@ func testInternetFacingRouteCount(t *testing.T, terraformOptions *terraform.Opti
 
 	assert.Equal(t, rtInternetFacingRouteCount, 1)
 }
+
+// test that the public subnets have the `map_public_ip_on_launch` flag enabled
+// this ensures that our instances will be given ipv4 addresses

@@ -7,6 +7,10 @@
 resource "aws_vpc" "honeypot" {
   // should probably source this number from a var file
   cidr_block = "10.0.0.0/16"
+  enable_dns_support = "true"
+  // https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.htm
+  // work out whether we should enable dns_hostnames
+  // enable_dns_hostnames = "?"
 
   tags {
     app_id   = "xibalba"
@@ -25,6 +29,8 @@ resource "aws_subnet" "honeypot" {
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
   cidr_block        = "10.0.${count.index}.0/28"
   vpc_id            = "${aws_vpc.honeypot.id}"
+  // TODO implement test to ensure that all public subnets are in fact public
+  //  map_public_ip_on_launch = "true"
 
   tags {
     app_id   = "xibalba"
