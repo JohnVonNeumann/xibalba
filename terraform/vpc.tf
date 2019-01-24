@@ -72,6 +72,7 @@ resource "aws_route" "honeypot" {
   gateway_id = "${aws_internet_gateway.honeypot.id}"
 
   timeouts {
-    create = "10"
-    delete = "10"
+    create = "10s"
+    delete = "10s"
+  }
 }
