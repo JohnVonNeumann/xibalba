@@ -85,6 +85,11 @@ func TestTerraformVpcTemplate(t *testing.T) {
 		testInternetFacingRouteCount(t, terraformOptions)
 	})
 
+	test_structure.RunTestStage(t, "test subnets are public and serving ipv4s", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, terraformDir)
+		testSubnetsArePublic(t, terraformOptions)
+	})
+
 }
 
 func createTerraformOptions(t *testing.T, terraformDir string) *terraform.Options {
@@ -421,3 +426,36 @@ func testInternetFacingRouteCount(t *testing.T, terraformOptions *terraform.Opti
 
 // test that the public subnets have the `map_public_ip_on_launch` flag enabled
 // this ensures that our instances will be given ipv4 addresses
+func testSubnetsArePublic(t *testing.T, terraformOptions *terraform.Options) {
+
+	awsRegion := terraformOptions.Vars["aws_region"].(string)
+	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
+	vpcSubnets := aws.GetSubnetsForVpc(t, vpcID, awsRegion)
+
+	var subnetList []string
+	for _, subnet := range vpcSubnets {
+		subnetList = append(subnetList, subnet.Id)
+	}
+
+	cfg, _ := external.LoadDefaultAWSConfig()
+	cfg.Region = awsRegion
+	client := ec2.New(cfg)
+
+	subnetParams := &ec2.DescribeSubnetsInput{
+		Filters: []ec2.Filter{
+			{
+				Name:   aws2.String("subnet-id"),
+				Values: subnetList,
+			},
+		},
+	}
+
+	subnetReq := client.DescribeSubnetsRequest(subnetParams)
+
+	subnetResp, _ := subnetReq.Send()
+
+	for _, subnet := range subnetResp.Subnets {
+		assert.True(t, *subnet.MapPublicIpOnLaunch)
+	}
+
+}
